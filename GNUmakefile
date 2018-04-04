@@ -17,11 +17,13 @@ default:
 
 eleven: maxx
 ten: maxn
-nine: maxp
+nine: maxp_all
 eight: maxp_arm
 seven: maxp_denver
 six: default
 five: maxq
+
+maxp: maxp_all
 eco: maxq
 idle: maxq
 
@@ -69,8 +71,8 @@ maxq:
 	@echo "* GPU cores:               0.85 GHz"
 	@echo
 
-maxp:
-	sudo /usr/local/sbin/jetson_clocks.sh --restore /usr/local/etc/jetson_clocks/maxp.conf
+maxp_all:
+	sudo /usr/local/sbin/jetson_clocks.sh --restore /usr/local/etc/jetson_clocks/maxp_all.conf
 	@echo
 	@echo "Max-P is for high-performance within 15 W."
 	@echo "Good for proper GPU work with medium I/O and threading?"
@@ -106,4 +108,4 @@ maxp_denver:
 
 
 
-.PHONY: default maxx maxn maxp maxp_arm maxp_denver
+.PHONY: default maxx maxn maxp_all maxp_arm maxp_denver
