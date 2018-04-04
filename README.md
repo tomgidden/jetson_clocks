@@ -40,7 +40,7 @@ place for them if you ask me -- and put them and itself in
 * `jetson_clocks maxx`:  Balls-to-the-wall full performance with fans going.
 * `jetson_clocks maxn`:  "No limits", but no _minimums_ either.
 * `jetson_clocks maxq`:  Peak performance per watt, apparently.
-* `jetson_clocks ...` :  aw hell, just read the Makefile.
+* `jetson_clocks ...` :  aw hell, just read the script. It's fairly simple.
 
 In addition, to make things easier:
 
