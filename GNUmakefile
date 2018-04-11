@@ -5,6 +5,8 @@ install:
 	sudo chmod 755 /usr/local/sbin/jetson_clocks
 	sudo mkdir -p /usr/local/etc/jetson_clocks
 	sudo cp *.conf /usr/local/etc/jetson_clocks
+	sudo cp sudoers.d__jetsonclocks /etc/sudoers.d/
+	sudo chmod 440 /etc/sudoers.d/sudoers.d__jetsonclocks
 
 clean:
 	sudo rm /usr/local/sbin/jetson_clocks{,.sh}
