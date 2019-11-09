@@ -8,6 +8,9 @@
 # https://devblogs.nvidia.com/jetson-tx2-delivers-twice-intelligence-edge/
 # https://elinux.org/Jetson/Performance#Viewing_the_current_CPU_status
 
+[ `whoami` != root ] && \
+    echo Error: Run this script\($0\) as a root user && exit 1
+
 if [[ -f ./default.conf ]]; then
     DIR=.
 elif [[ -f /usr/local/etc/jetson_power/default.conf ]]; then
@@ -105,7 +108,8 @@ fi
 
 case "$1" in
     eleven|maxn)
-        sudo /usr/bin/jetson_clocks --restore $DIR/maxn.conf
+        /usr/sbin/nvpmodel -m 0
+        /usr/bin/jetson_clocks --restore $DIR/maxn.conf
         echo
         echo "Max-N is running at full blast."
         echo "Okay on occasion, but wasteful. Better to use Max-X ?"
@@ -119,7 +123,8 @@ case "$1" in
         ;;
 
     ten|maxx)
-        sudo /usr/bin/jetson_clocks --restore $DIR/maxx.conf
+        /usr/sbin/nvpmodel -m 0
+        /usr/bin/jetson_clocks --restore $DIR/maxx.conf
         echo
         echo "Max-X is running with no limits at all and full GPU, but"
         echo "with CPU throttling, which I reckon might be what you'd"
@@ -136,7 +141,8 @@ case "$1" in
         ;;
 
     nine|maxp|maxp_all)
-        sudo /usr/bin/jetson_clocks --restore $DIR/maxp_all.conf
+        /usr/sbin/nvpmodel -m 2
+        /usr/bin/jetson_clocks --restore $DIR/maxp_all.conf
         echo
         echo "Max-P is for high-performance within 15 W."
         echo "Good for proper GPU work with medium I/O and threading?"
@@ -150,7 +156,8 @@ case "$1" in
         ;;
 
     eight|maxp_arm)
-        sudo /usr/bin/jetson_clocks --restore $DIR/maxp_arm.conf
+        /usr/sbin/nvpmodel -m 3
+        /usr/bin/jetson_clocks --restore $DIR/maxp_arm.conf
         echo
         echo "Max-P-ARM is for high-performance within 15 W."
         echo "Good for proper GPU work with better CPU, I/O and threading?"
@@ -164,7 +171,8 @@ case "$1" in
         ;;
 
     seven|maxp_denver)
-        sudo /usr/bin/jetson_clocks --restore $DIR/maxp_denver.conf
+        /usr/sbin/nvpmodel -m 4
+        /usr/bin/jetson_clocks --restore $DIR/maxp_denver.conf
         echo
         echo "Max-P-Denver is for high-performance within 15 W."
         echo "One ARM A57 core active for supervision, and one"
@@ -182,7 +190,8 @@ case "$1" in
         ;;
 
     six|tx1|maxq)
-        sudo /usr/bin/jetson_clocks --restore $DIR/maxq.conf
+        /usr/sbin/nvpmodel -m 1
+        /usr/bin/jetson_clocks --restore $DIR/maxq.conf
         echo
         echo "Peak performance/efficiency at 7.5W."
         echo "ARM A57 CPUs active, GPU at medium, no throttle."
@@ -196,7 +205,8 @@ case "$1" in
         ;;
 
     default|boot|five)
-        sudo /usr/bin/jetson_clocks --restore $DIR/default.conf
+        /usr/sbin/nvpmodel -m 4
+        /usr/bin/jetson_clocks --restore $DIR/default.conf
         echo
         echo "Default profile, similar to that on boot.  All six CPU cores"
         echo "active, fan temperature control, and idling allowed."
@@ -210,7 +220,8 @@ case "$1" in
         ;;
 
     four|eco|idle)
-        sudo /usr/bin/jetson_clocks --restore $DIR/eco.conf
+        /usr/sbin/nvpmodel -m 4
+        /usr/bin/jetson_clocks --restore $DIR/eco.conf
         echo
         echo "Low power usage, like default/boot but with minimal CPU"
         echo
