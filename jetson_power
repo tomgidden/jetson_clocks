@@ -1,0 +1,233 @@
+#!/bin/bash
+
+# https://github.com/tomgidden/jetson_power.git
+
+# Ref:
+#
+# http://www.jetsonhacks.com/2017/03/25/nvpmodel-nvidia-jetson-tx2-development-kit/
+# https://devblogs.nvidia.com/jetson-tx2-delivers-twice-intelligence-edge/
+# https://elinux.org/Jetson/Performance#Viewing_the_current_CPU_status
+
+if [[ -f ./default.conf ]]; then
+    DIR=.
+elif [[ -f /usr/local/etc/jetson_power/default.conf ]]; then
+    DIR=/usr/local/etc/jetson_power
+else
+    DIR=.
+fi
+
+#set_idling ()
+#{
+#   for f in /sys/devices/system/cpu/cpu*/cpuidle/state*/disable; do
+#       echo $1 > $f
+#   done
+#}
+#
+#set_cluster ()
+#{
+#   for f in /sys/kernel/debug/tegra_cpufreq/*_CLUSTER/*/enable; do
+#       echo $1 > $f
+#   done
+#}
+#
+#set_fan_auto ()
+#{
+#   echo 0 > /sys/devices/pwm-fan/target_pwm
+#   echo 1 > /sys/devices/pwm-fan/temp_control
+#}
+#
+#set_fan_on ()
+#{
+#   echo 255 > /sys/devices/pwm-fan/target_pwm
+#   echo 0 > /sys/devices/pwm-fan/temp_control
+#}
+#
+#set_fan_off ()
+#{
+#   echo 0 > /sys/devices/pwm-fan/target_pwm
+#   echo 0 > /sys/devices/pwm-fan/temp_control
+#}
+#
+#set_cpu_min ()
+#{
+#   if [[ -f /sys/devices/system/cpu/cpu$1/cpufreq/scaling_min_freq ]]; then
+#       echo $2 > /sys/devices/system/cpu/cpu$1/cpufreq/scaling_min_freq
+#   fi
+#}
+#
+#set_cpu_onoff ()
+#{
+#   if [[ -f /sys/devices/system/cpu/cpu$1/online ]]; then
+#       echo $2 > /sys/devices/system/cpu/cpu$1/online
+#   fi
+#}
+#
+#set_gpu_min ()
+#{
+#   for f in 17000000.gv11b 17000000.gp10b 57000000.gpu; do
+#       if [[ -f /sys/devices/$f/devfreq/$f/min_freq ]]; then
+#           echo $1 > /sys/devices/$f/devfreq/$f/min_freq
+#           return
+#       fi
+#   done
+#}
+#
+#set_emc_low ()
+#{
+#   if [[ -f /sys/kernel/debug/bpmp/debug/clk/emc/mrq_rate_locked ]]; then
+#       echo 0 > /sys/kernel/debug/bpmp/debug/clk/emc/mrq_rate_locked
+#   fi
+#}
+#
+#set_emc_high ()
+#{
+#   if [[ -f /sys/kernel/nvpmodel_emc_cap/emc_iso_cap ]]; then
+#       # tegra186 / tegra194
+#
+#       CAP=`cat /sys/kernel/nvpmodel_emc_cap/emc_iso_cap`
+#       FMAX=`cat /sys/kernel/debug/bpmp/debug/clk/emc/max_rate`
+#
+#       if [ "$CAP" -gt 0 ] && [ "$CAP" -lt "$FMAX" ]; then
+#           echo $CAP > /sys/kernel/debug/bpmp/debug/clk/emc/rate
+#           echo 1 > /sys/kernel/debug/bpmp/debug/clk/emc/mrq_rate_locked
+#       fi
+#
+#   elif [[ -f /sys/kernel/debug/tegra_bwmgr/emc_min_rate ]]; then
+#       # tegra210
+#
+#       cat /sys/kernel/debug/tegra_bwmgr/emc_max_rate \
+#           > /sys/kernel/debug/clk/override.emc/clk_update_rate
+#
+#       echo 1 > /sys/kernel/debug/clk/override.emc/clk_state
+#   fi
+#}
+
+
+case "$1" in
+    eleven|maxn)
+        sudo /usr/bin/jetson_clocks --restore $DIR/maxn.conf
+        echo
+        echo "Max-N is running at full blast."
+        echo "Okay on occasion, but wasteful. Better to use Max-X ?"
+        echo
+        echo "* 4 x ARM A57 CPU cores:   2.0 GHz"
+        echo "* 2 x Denver2 CPU cores:   2.0 GHz"
+        echo "* GPU cores:               1.3 GHz"
+        echo "* Fans:                    enabled"
+        echo "* Throttling:              disabled"
+        echo
+        ;;
+
+    ten|maxx)
+        sudo /usr/bin/jetson_clocks --restore $DIR/maxx.conf
+        echo
+        echo "Max-X is running with no limits at all and full GPU, but"
+        echo "with CPU throttling, which I reckon might be what you'd"
+        echo "expect for a performance mode.  Undocumented."
+        echo
+        echo "Best avoided?"
+        echo
+        echo "* 4 x ARM A57 CPU cores:   0.35 GHz - 2.0 GHz"
+        echo "* 2 x Denver2 CPU cores:   0.35 GHz - 2.0 GHz"
+        echo "* GPU cores:               1.3 GHz"
+        echo "* Fans:                    automatic"
+        echo "* Throttling:              enabled"
+        echo
+        ;;
+
+    nine|maxp|maxp_all)
+        sudo /usr/bin/jetson_clocks --restore $DIR/maxp_all.conf
+        echo
+        echo "Max-P is for high-performance within 15 W."
+        echo "Good for proper GPU work with medium I/O and threading?"
+        echo
+        echo "* 4 x ARM A57 CPU cores:   1.4 GHz"
+        echo "* 2 x Denver2 CPU cores:   1.4 GHz"
+        echo "* GPU core:                1.12 GHz"
+        echo "* Fans:                    enabled"
+        echo "* Throttling:              disabled"
+        echo
+        ;;
+
+    eight|maxp_arm)
+        sudo /usr/bin/jetson_clocks --restore $DIR/maxp_arm.conf
+        echo
+        echo "Max-P-ARM is for high-performance within 15 W."
+        echo "Good for proper GPU work with better CPU, I/O and threading?"
+        echo
+        echo "* 4 x ARM A57 CPU cores:   2.0 GHz"
+        echo "* 2 x Denver2 CPU cores:   disabled"
+        echo "* GPU core:                1.12 GHz"
+        echo "* Fans:                    enabled"
+        echo "* Throttling:              disabled"
+        echo
+        ;;
+
+    seven|maxp_denver)
+        sudo /usr/bin/jetson_clocks --restore $DIR/maxp_denver.conf
+        echo
+        echo "Max-P-Denver is for high-performance within 15 W."
+        echo "One ARM A57 core active for supervision, and one"
+        echo "Denver2 core active for single-threaded calculation."
+        echo "Good for proper GPU work with low I/O?"
+        echo
+        echo "* 1 x ARM A57 CPU core:    0.35 GHz"
+        echo "* 3 x ARM A57 CPU cores:   disabled"
+        echo "* 1 x Denver2 CPU cores:   2.04 GHz"
+        echo "* 1 x Denver2 CPU cores:   disabled"
+        echo "* GPU core:                1.12 GHz"
+        echo "* Fans:                    enabled"
+        echo "* Throttling:              disabled"
+        echo
+        ;;
+
+    six|tx1|maxq)
+        sudo /usr/bin/jetson_clocks --restore $DIR/maxq.conf
+        echo
+        echo "Peak performance/efficiency at 7.5W."
+        echo "ARM A57 CPUs active, GPU at medium, no throttle."
+        echo
+        echo "* 4 x ARM A57 CPU cores:   1.2 GHz"
+        echo "* 2 x Denver2 CPU cores:   disabled"
+        echo "* GPU core:                0.8 GHz"
+        echo "* Fans:                    enabled"
+        echo "* Throttling:              disabled"
+        echo
+        ;;
+
+    default|boot|five)
+        sudo /usr/bin/jetson_clocks --restore $DIR/default.conf
+        echo
+        echo "Default profile, similar to that on boot.  All six CPU cores"
+        echo "active, fan temperature control, and idling allowed."
+        echo
+        echo "* 4 x ARM A57 CPU cores:   0.35 GHz - 1.2 GHz"
+        echo "* 2 x Denver2 CPU cores:   0.35 GHz - 1.2 GHz"
+        echo "* GPU core:                0.8 GHz"
+        echo "* Fans:                    automatic"
+        echo "* Throttling:              enabled"
+        echo
+        ;;
+
+    four|eco|idle)
+        sudo /usr/bin/jetson_clocks --restore $DIR/eco.conf
+        echo
+        echo "Low power usage, like default/boot but with minimal CPU"
+        echo
+        echo "* 1 x ARM A57 CPU core:    0.35 GHz - 1.2 GHz"
+        echo "* 3 x ARM A57 CPU cores:   disabled"
+        echo "* 1 x Denver2 CPU core:    0.35 GHz - 1.2 GHz"
+        echo "* 1 x Denver2 CPU core:    disabled"
+        echo "* GPU core:                0.11 GHz"
+        echo "* Fans:                    automatic"
+        echo "* Throttling:              enabled"
+        echo
+        ;;
+
+    *)
+        echo "Usage:"
+        echo
+        echo "  $0 {default,eco,maxx,maxn,maxp,maxq,...}"
+        echo
+        exit 1
+esac

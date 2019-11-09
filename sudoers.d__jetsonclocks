@@ -1,3 +1,0 @@
-Cmnd_Alias JETSONCLOCKS = /usr/local/sbin/jetson_clocks.sh
-%nvidia ALL=(ALL) NOPASSWD:JETSONCLOCKS
-

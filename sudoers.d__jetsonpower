@@ -1,0 +1,3 @@
+Cmnd_Alias JETSONPOWER = /usr/local/sbin/jetson_power
+%nvidia ALL=(ALL) NOPASSWD:JETSONPOWER
+

@@ -1,4 +1,4 @@
-# `jetson_clocks`
+# `jetson_power`
 
 ## Introduction
 
@@ -7,7 +7,7 @@ myriad processors on the TX2 module.
 
 There's the `nvpmodel` utility that recognises various different clock
 profiles, and allows for custom profiles; and there's the
-`jetson_clocks.sh` utility in `~nvidia` that also seems to control the fan
+`jetson_clocks` utility in `/usr/bin` that also seems to control the fan
 too, for a "balls out" profile. In addition, there's `/sys` that allows
 manual tweaking.
 
@@ -24,30 +24,26 @@ into isn't the "Max-Q" that it seems to be, but "Max-Q" with the Denver2
 cores _also_ active.
 
 So, this repo contains snapshots of the configurations as programmed by
-`jetson_clocks.sh`, and simple synonyms to load them.
+`jetson_clocks`, and simple synonyms to load them.
 
 ## Install
 
-Just do `make install`.  It'll copy the `jetson_clocks.sh` and
-`tegrastats` utilities out of the `nvidia` user's home directory -- an odd
-place for them if you ask me -- and put them and itself in
-`/usr/local/sbin/` with the configuration files in
-`/usr/local/etc/jetson_clocks`.
+Just do `make install`.
 
 ## Using
 
-* `jetson_clocks` :  Resets to the default boot configuration, as far as I can tell
-* `jetson_clocks maxx`:  Balls-to-the-wall full performance with fans going.
-* `jetson_clocks maxn`:  "No limits", but no _minimums_ either.
-* `jetson_clocks maxq`:  Peak performance per watt, apparently.
-* `jetson_clocks ...` :  aw hell, just read the script. It's fairly simple.
+* `jetson_power` :  Resets to the default boot configuration, as far as I can tell
+* `jetson_power maxx`:  Balls-to-the-wall full performance with fans going.
+* `jetson_power maxn`:  "No limits", but no _minimums_ either.
+* `jetson_power maxq`:  Peak performance per watt, apparently.
+* `jetson_power ...` :  aw hell, just read the script. It's fairly simple.
 
 In addition, to make things easier:
 
-* `jetson_clocks eleven` is an alias for `jetson_clocks maxx`... probably overworks the processors for no good reason.
-* `jetson_clocks ten` is an alias for `jetson_clocks maxn`... probably what you want for "full performance".
-* `jetson_clocks nine`, `jetson_clocks eight`, etc. etc.
-* `jetson_clocks idle`, `jetson_clocks eco` : quiet time.
+* `jetson_power eleven` is an alias for `jetson_power maxx`... probably overworks the processors for no good reason.
+* `jetson_power ten` is an alias for `jetson_power maxn`... probably what you want for "full performance".
+* `jetson_power nine`, `jetson_power eight`, etc. etc.
+* `jetson_power idle`, `jetson_power eco` : quiet time.
 
 ## Contributions
 
